@@ -1,0 +1,13 @@
+version: '3'
+services:
+  web:
+    image:
+      "microsoft/iis"
+    ports:
+      - "80:80"
+    isolation: hyperv
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 1024M
