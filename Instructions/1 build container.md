@@ -44,7 +44,7 @@ Information Server (IIS) to be running in the container.
 | 3|Create a new DockerFile (no file extension) and open it in Notepad, by running the following commands: <br><br> 1. New-Item Dockerfile <br> 2. Notepad Dockerfile <br> 3. A blank Notepad will show up.||
 | 4| Add the following content: <br><br> FROM microsoft/aspnet:4.7.1-windowsservercore-ltsc2016 <br> COPY bin/Release/Publish /inetpub/wwwroot|
 | 5 | **Save and close** the file| The Dockerfile contains instructions for the docker engine on how to build a container, when running the “docker build” command in this directory.|
-| 6 | In PowerShell run the command <br> **“docker build . -t eshopweb:1.0”**<br> in the directory **“C:\\Users\\Administrator\\Desktop\\<br>Lab\\eShopLegacyWebFormsSolution\\src\\eShopLegacyWebForms”** | This command will tell the Docker host to build a container image and tag it eshopweb:1.0, using the instructions in the Dockerfile.
+| 6 | In PowerShell run the command <br> **“docker build . -t eshopweb:1.0”**<br> in the directory **“C:\\Users\\Administrator\\Desktop\\<br>Lab\\eShopLegacyWebFormsSolution\\src\\eShopLegacyWebForms”** | This command will tell the Docker host to build a container image and tag it eshopweb:1.0, using the instructions in the Dockerfile. **Note:** Make sure Docker is running and on Windows containers mode
 | 7 | Run the command **docker images** to see the container images cached on your machine | You should see an image with the repository: eshopweb and the tag: 1.0. |
 
 ### Completion
