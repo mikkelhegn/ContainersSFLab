@@ -1,255 +1,88 @@
-# Create an Azure Service Fabric application Mesh with your container
+# Create an Azure Service Fabric Mesh application
 
-## NEED UPDATING!!!
+## Goal
 
-**Goal:** The goal of this section is to have the container running as a
-service in a Service Fabric
-application.
+The goal of this section is to create a new .net core application and run it in Mesh.
 
 ## Process
 
 | **Step**                                         | **Procedure**                                                                                                                                |
 | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Create a Service Fabric Application              | We will use Visual Studio to create a Service Fabric application hosting the container.                                                      |
-| Run the container in Service Fabric Mesh |                                     |
-| Apply autoscaling             | We will apply container resource policies and parameters for configuration. Finally, we will upgrade the running application in the cluster. |
-
-##   
+| Create a Service Fabric Mesh Application using Visual Studio       | We will use Visual Studio to create a Service Fabric application hosting the container |
+| Deploy the application to Service Fabric Mesh | Using Visual Studio and Azure Container Registry |
+| Add configuration to the service              | We will apply configuration to the service using the Mesh model |
 
 ## Create a Service Fabric Application
 
 In this section we will create a Service Fabric application with the
 container as a service, and configure it.
 
-<table>
-<thead>
-<tr class="header">
-<th><strong>Step</strong></th>
-<th><strong>Action</strong></th>
-<th><strong>Result</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td>Open the solution <strong>eShopLegacyWebForms.sln</strong>, which you will find in the <strong>\Lab\eShopLegacyWebFormsSolution</strong> folder on the desktop.</td>
-<td>The application code will open in Visual Studio 2017.</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td><strong>Right-Click</strong> the project file and choose <strong>Add -&gt; Container Orchestrator Supprt</strong>. Choose <strong>Service Fabric</strong>.</td>
-<td>Visual Studio 2017 will now create the required Dockerfile for your container image, as well as a Service Fabric application project in the solution in Visual Studio.</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td><p>To instruct Service Fabric to open port 80 for the service (our container), like we did in the previous docker commands, we must specify the port to use in the ServiceManifest.xml file.</p>
-<ol type="1">
-<li><p>The ServiceManifest.xml file should already be open</p></li>
-<li><p>Specify the port to use for the endpoint in the &lt;Endpoint&gt; element:</p></li>
-</ol>
-<blockquote>
-<p>&lt;Endpoint Name=&quot;eShopLegacyWebFormsTypeEndpoint&quot; Port=&quot;80&quot;/&gt;</p>
-</blockquote>
-<ol start="3" type="1">
-<li><p>Save the file</p></li>
-</ol>
-<p><strong>Note:</strong></p>
-<p>If no endpoint is specified, Service Fabric will assign a random endpoint from a predefined pool of ports.</p></td>
-<td>The endpoint is bound to the service, which will host the container in Service Fabric. This configuration will ensure that Service Fabric attaches a port to the service process when it’s running.</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td><p>To instruct Service Fabric to map port 80 of the container to the endpoint we specified above, we must create a PortBinding configuration in the ApplicationManifest.xml file.</p>
-<ol type="1">
-<li><p>In the ApplicationPackageRoot folder under the Application project, open the ApplicationManifest.xml file</p></li>
-<li><p>Verify the following configuration, as part of the &lt; ContainerHostPolicies &gt; element:</p></li>
-</ol>
-<blockquote>
-<p>&lt;PortBinding ContainerPort=&quot;80&quot; EndpointRef=&quot;eShopLegacyWebFormsTypeEndpoint&quot; /&gt;</p>
-</blockquote>
-<ol start="3" type="1">
-<li><p>Save the file</p></li>
-</ol></td>
-<td>This configuration ensures that the port exposed by the container, will be mapped to the endpoint of the service. The end result is similar to the <strong>-p 80:80</strong> command we used when running the container previous.</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td><p>Finally, we’ll specify an environment variable to pass to the container.</p>
-<ol type="1">
-<li><p>In the ServiceManifest.xml file, add the following element in the CodePackage element to pass an environment variable to the container:</p></li>
-</ol>
-<blockquote>
-<p>&lt;EnvironmentVariables&gt;</p>
-<p>&lt;EnvironmentVariable Name=&quot;eShopTitle&quot; Value=&quot;on SF!&quot;/&gt;</p>
-<p>&lt;/EnvironmentVariables&gt;</p>
-</blockquote>
-<ol start="2" type="1">
-<li><p>Save the file</p></li>
-</ol>
-<p><strong>Note:</strong></p>
-<p>If the environment variable value you put in is too long a string, it will cause the web site to not show any title – so be kind</p></td>
-<td>This environment variable configuration will be used for the front page of the web application.</td>
-</tr>
-</tbody>
-</table>
+1. Open **Visual Studio**
+
+1. Create a new **Service Fabric Mesh Application** project
+
+1. Choose **ASP.NET Core**
+
+1. Choose the **Web Application** template
+
+Notice that two projects are created. The Mesh Application project holds the yaml files, which described shared resources for the application. The asp.net core web project is a regular asp.net core project, which runs anywhere. But the project also has a Dockerfile and a service.yaml file to describe how to run it in Mesh.
+
+1. Press **F5** to debug the application
+
+Once you hit F5, Visual Studio will help setup a local Service Fabric cluster to host the Mesh application in containers.
+
+Once completed, the application is shown in your browser.
+
+1. In Visual Studio stop the debug session by pressing **Shift+F5**
+
+## Publish the application to Azure Service Fabric Mesh
+
+1. To publish the application to Service Fabric Mesh in Azure, **Right-click** the Service Fabric Mesh application project and choose **Publish**
+
+1. Sign in to your Azure account and provide the information needed for the Publish dialog.
+
+Visual Studio will pull a container image to complete the container build. This may take a few minutes to complete. The Visual Studio output window will show the progress.
+
+Once the deployment is done. Visual Studio will output the IP address of the application running in Mesh.
+
+1. Open the Azure Portal **https://portal.azure.com**
+
+1. Browse to the resource group you just created
+
+1. Open the Mesh Application and browse through Services - Replica 0 - Code Package and choose **Logs**
+
+This will show you the stdout container logs form the container deployed to Mesh
+
+## Add configuration
+
+1. In Visual Studio, open the **service.yaml** file under the **Service Resources** folder in the Web project.
+
+1. In **line 22 and 23** add another environment variable with the name **MyEnv** and a random value
+
+1. Save the file
+
+1. Open the **About.cshtml** file in the **Pages** folder
+
+1. Add the following line to the file:
+
+``` cshtml
+<p>MyVar value: @Environment.GetEnvironmentVariable("MyVar")</p>
+```
+
+1. Press **F5** to debug the application, once the web site comes up, go to the **About** page and you should see the value from the environment variable show up.
+
+1. Without stopping the debugger, you can make changes to the About.cshtml file and reload the browser to see you changes. There is no need to redeploy the container and app to quickly see changes that do not require recompiling the code.
+
+1. Stop the debug session by pressing **Shift+F5**
+
+## Deploy the new version to Azure Service Fabric Mesh
+
+1. To publish the updated application to Service Fabric Mesh in Azure, **Right-click** the Service Fabric Mesh application project and choose **Publish**
+
+1. The publish dialog should have stored the information and you can click **Publish**
+
+This will kick-off a rebuild and deployment of the containers. Once finished go to the web site. You can also browse the Azure portal to see the environment variable that the container is running with.
 
 ### Completion
 
-In this section of the lab, we’ve created a Service Fabric application
-and configured the container to run in a Service Fabric cluster.
-
-##   
-
-## Run the container as a service in Service Fabric
-
-In this section we will run the container in Service Fabric on our
-developer machine.
-
-<table>
-<thead>
-<tr class="header">
-<th><strong>Step</strong></th>
-<th><strong>Action</strong></th>
-<th><strong>Result</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td><p>Service Fabric cluster can run on Windows 10, and the SDK provides cluster configuration scripts which supports setting up clusters of one node for development purposes. Let’s start by creating a one node cluster.</p>
-<p><strong>Right-click</strong> the <strong>Service Fabric Local Cluster Manager</strong> in the task bar and select <strong>Start Local Cluster</strong></p></td>
-<td><p>A Service Fabric cluster will now be created on your developer machine.</p>
-<p>We will be using a one node cluster in this lab, as additional nodes will only add overhead to the developer experience and is usually only needed for debugging failover scenarios.</p></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td>Open <strong>Service Fabric Explorer</strong> using the desktop link and choose <strong>Connect to localhost</strong></td>
-<td><p>Service Fabric Explorer is your management UI for any Service Fabric cluster, locally, in Azure or on-premises.</p>
-<p>Service Fabric explorer let you get information about your cluster, application and services and do administrative commands against the cluster.</p></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td><p>Next go back to Visual Studio 2017 to publish the application:</p>
-<ol type="1">
-<li><p><strong>Right-click</strong> the Service Fabric application project and select <strong>Publish</strong> to publish the application to the local Service Fabric cluster.</p></li>
-<li><p>Choose <strong>PublishProfiles\Local.1Node.xml</strong> as the Target profile.</p></li>
-<li><p>Click <strong>Publish</strong></p></li>
-</ol></td>
-<td>Visual Studio will build the container and deploy the application to Service Fabric. The Service Fabric cluster will then pull the container image form the local cache and run it as a Service in Service Fabric.</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>Once the deployment is completed, you can browse to <strong>http://localhost</strong> to see the website running in SF.</td>
-<td>In this scenario we are just publishing the container, however you can also debug the application code in a container running on Service Fabric, simply by pressing F5.</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td>Go to <strong>Service Fabric Explorer</strong>, which will now show you one Application deployed in the cluster.</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-### Completion
-
-In this section of the lab, we’ve created a local Service Fabric cluster
-and deployed our application in a container to the cluster.
-
-##   
-
-## Apply container policies and upgrade the application
-
-In this section we will enable parameterization of our application
-configuration and apply resource policies to the container. We will also
-roll-out an upgrade to the Service Fabric application.
-
-<table>
-<thead>
-<tr class="header">
-<th><strong>Step</strong></th>
-<th><strong>Action</strong></th>
-<th><strong>Result</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td><p>Docker and Service Fabric can control the amount of resources containers can use in a cluster. To specify the amount of memory and CPU for our container do the following:</p>
-<ol type="1">
-<li><p>In the <strong>ApplicationPackageRoot</strong> folder under the Application project, open the <strong>ApplicationManifest.xml</strong> file</p></li>
-<li><p>Insert the following configuration, as part of the <strong>&lt; Policies &gt;</strong> element:</p></li>
-</ol>
-<p>&lt;ServicePackageResourceGovernancePolicy CpuCores=&quot;1&quot; MemoryInMB=&quot;1024&quot; /&gt;</p>
-<ol start="3" type="1">
-<li><p><strong>Save</strong> the file</p></li>
-</ol></td>
-<td>This will make sure this container gets a single CPU core and 1GB of memory assigned in the cluster. Service Fabric uses this enforcement to place containers in the cluster.</td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td><p>We also want to have a single configuration file for changing configuration for our container across environments. In Service Fabric we will use the ApplicationParameter files to do this. To parameterize the environment variable, do the following:</p>
-<ol type="1">
-<li><p>Open the <strong>ApplicationManifest.xml</strong> file</p></li>
-<li><p>Insert the following to override the environment variable in the ServiceManifest.xml file as part of the <strong>&lt;ServiceManifestImport&gt;</strong> element:</p></li>
-</ol>
-<p>&lt;EnvironmentOverrides CodePackageRef=&quot;Code&quot;&gt;</p>
-<p>&lt;EnvironmentVariable Name=&quot;eShopTitle&quot; Value=&quot;[eShopLegacyWebForms_eShopTitle]&quot; /&gt;</p>
-<p>&lt;/EnvironmentOverrides&gt;</p>
-<ol start="3" type="1">
-<li><p>The value specified in square bracket `[]` is a reference to a parameter, which we will also have to add to the file, as part of the <strong>&lt;Parameters&gt;</strong> element. We will set the default value to be an empty string.</p></li>
-</ol>
-<p>&lt;Parameter Name=&quot;eShopLegacyWebForms_eShopTitle&quot; DefaultValue=&quot;&quot; /&gt;</p>
-<ol start="4" type="1">
-<li><p><strong>Save</strong> the file</p></li>
-</ol></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td><p>Now that we have defined the environment variable to be overridden by a parameter, let’s specify the parameter:</p>
-<ol type="1">
-<li><p>Open the <strong>ApplicationParameters</strong> folder and the file <strong>Local.1Node.xml</strong>. This is the file which will be used when we publish to our local cluster.</p></li>
-<li><p>Add the following to the <strong>&lt;Parameters&gt;</strong> element:</p></li>
-</ol>
-<p>&lt;Parameter Name=&quot;eShopLegacyWebForms_eShopTitle&quot; Value=&quot;One&quot; /&gt;</p>
-<ol start="3" type="1">
-<li><p><strong>Save</strong> the file</p></li>
-</ol></td>
-<td>Parameter files is a concept understood by Visual Studio and VSTS. If you will be using PowerShell or other means to deploy, Service Fabric accepts parameters as a hash table.</td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td><p>Let’s go ahead and upgrade the application in the local cluster:</p>
-<ol type="1">
-<li><p><strong>Right-click</strong> the Service Fabric application project and select <strong>Publish</strong> to publish the application to the local Service Fabric cluster.</p></li>
-<li><p>Choose <strong>PublishProfiles\Local.1Node.xml</strong> as the Target profile.</p></li>
-<li><p>Check <strong>Upgrade the application</strong></p></li>
-<li><p>Click <strong>Manifest Version</strong></p></li>
-<li><p>Change the version of the <strong>ApplicationType</strong> to 2.0 (New Version)</p></li>
-<li><p>Click <strong>Save</strong></p></li>
-<li><p>Click <strong>Publish</strong></p></li>
-</ol></td>
-<td>All parts of a Service Fabric application are versioned. This enables the platform to only upgrade the specific parts of the application which are being changed as part of an upgrade.</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td><p>Open <strong>Service Fabric Explorer</strong> using the desktop link and choose <strong>Connect to localhost.</strong></p>
-<ol type="1">
-<li><p>Click <strong>Applications</strong> and notice the application is now version 2.0.</p></li>
-<li><p>Click <strong>Cluster</strong> and <strong>Metrics</strong> and notice the resource capacity overview in the cluster.</p></li>
-</ol></td>
-<td>If the cluster had consisted of multiple nodes, the upgrade would have taken a while as each node gets updated to completion, and the upgrade would only move forward if no errors occurred. If an error occurred, the upgrade would automatically roll-back, leaving the application up and running.</td>
-</tr>
-<tr class="even">
-<td>6</td>
-<td>Open Edge and browse to <strong>http://localhost</strong> to see the changes.</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-### Completion
-
-In this section of the lab, we’ve parameterized our configuration,
-applied resource governance and upgraded our application in the Service
-Fabric cluster.
+In this section of the lab, we’ve build a new asp.net core service and deployed it to Azure Service Fabric Mesh

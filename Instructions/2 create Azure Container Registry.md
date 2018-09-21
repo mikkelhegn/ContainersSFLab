@@ -127,69 +127,9 @@ In this section of the lab, we’ve tagged our container image and
 uploaded it to our private container registry, ready to be deployed to
 any container host.
 
-##   
+## Clean up
 
-## Pull the container image and run it locally
+Finally, let’s clean-up, by running the following commands in PowerShell in the directory C:\Users\Administrator\Desktop\Lab:
 
-In this section we’ll do a final validation of being able to pull down
-the container image.
-
-**Note:** If you don’t want to wait for the image to be pushed to the
-registry, skip step 1 and 2 in this section.
-
-<table>
-<thead>
-<tr class="header">
-<th><strong>Step</strong></th>
-<th><strong>Action</strong></th>
-<th><strong>Result</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1</td>
-<td><p>Since we already have the image locally, let’s start by removing the local copy. Still in PowerShell, run this command:</p>
-<p><strong>docker rmi <em>[insert acr name]</em>.azurecr.io/eshopweb:1.0</strong></p></td>
-<td><p>The output of the command should read: <strong>Untagged: mycontainerregistry.azurecr.io\eshopweb:1.0</strong></p>
-<p>Since this is another tag on top of an existing image, the image is not being deleted, just the tag.</p></td>
-</tr>
-<tr class="even">
-<td>2</td>
-<td><p>To pull the container run this command:</p>
-<p><strong>docker pull <em>[insert acr name]</em>.azurecr.io/eshopweb:1.0</strong></p></td>
-<td>The pull will complete instantaneously, as the image files, which this tag refers to are already on disc.</td>
-</tr>
-<tr class="odd">
-<td>3</td>
-<td><p>Let’s run the container and validate it works:</p>
-<p><strong>docker run -p 80:80 --name eshopweb -e eShopTitle=MyTitle <em>[insert acr name]</em>.azurecr.io/eshopweb:1.0</strong></p></td>
-<td></td>
-</tr>
-<tr class="even">
-<td>4</td>
-<td>Once the command returns, open Edge and browse to <strong>http://localhost.</strong></td>
-<td>You should now see the application.</td>
-</tr>
-<tr class="odd">
-<td>5</td>
-<td><p>Finally, let’s clean-up, by running the following commands in PowerShell in the directory C:\Users\Administrator\Desktop\Lab:</p>
-<ol type="1">
-<li><p>by stopping the container: <strong>docker stop eshopweb</strong></p></li>
-<li><p>Remove the container: <strong>docker rm eshopweb</strong></p></li>
-<li><p>Reset the repository</p>
-<ol type="a">
-<li><p>git clean -df</p></li>
-<li><p>git reset --hard</p></li>
-</ol></li>
-</ol>
-<p><strong>Note:</strong> You need to do the clean-up to continue with the lab</p></td>
-<td>All cleaned-up and good to go</td>
-</tr>
-</tbody>
-</table>
-
-### Completion
-
-In this section of the lab, we’ve pulled down the container image form
-our private container registry, simulating a deployment, and validated
-the container can be run and the application works.
+1. git clean -df
+1. git reset --hard
