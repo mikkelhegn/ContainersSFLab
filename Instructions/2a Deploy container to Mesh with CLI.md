@@ -25,8 +25,8 @@ In this exercise, you will complete the following steps
 | 8        | Keep navigating through the service, replica and finally the `helloWorldCode' Code Package. Here you can see the logs emitted by the container to stdout | Services in Mesh can have multiple code packages, which are always deployed together and share ip |
 | 9        | Let's scale up the service, by adding another replica, let's start with downloading the WRM template: `curl -o mesh_rp.linux.json https://sfmeshsamples.blob.core.windows.net/templates/helloworld/mesh_rp.linux.json` | This will save the file to the cloud shell storage |
 | 10       | Open the file in VS Code, in cloud shell `code mesh_rp.linux.json` | |
-| 11       | Save the file and close the editor ctrl + s, ctrl + q | There a small ellipse icon in the top right corner to get to the menu |
-| 12       | In line 80, change the replicaCount to `2` | This is the number of replicas of a service you want to run. Remember at this services features two code packages, the consumption will be twice the sum of the code package resources defined. |
+| 11       | In line 80, change the replicaCount to `2` | This is the number of replicas of a service you want to run. Remember at this services features two code packages, the consumption will be twice the sum of the code package resources defined. |
+| 12       | Save the file and close the editor ctrl + s, ctrl + q | There a small ellipse icon in the top right corner to get to the menu |
 | 13       | Let's update the deployment by running `az mesh deployment create --resource-group meshAppRg --template-file mesh_rp.linux.json` | ARM uses incremental deployment per default, so only changes will be applied to the deployment |
 | 14       | Head over to the Azure Portal to see a second replica of he service now running |
 
