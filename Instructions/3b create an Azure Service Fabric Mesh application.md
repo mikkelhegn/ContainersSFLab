@@ -57,7 +57,7 @@ This will show you the stdout container logs form the container deployed to Mesh
 
 1. In Visual Studio, open the **service.yaml** file under the **Service Resources** folder in the Web project.
 
-1. In **line 22 and 23** add another environment variable with the name **MyEnv** and a random value
+1. In **line 22 and 23** add another environment variable with the name **MyEnvVar** and a random value
 
 1. Save the file
 
@@ -65,8 +65,8 @@ This will show you the stdout container logs form the container deployed to Mesh
 
 1. Add the following line to the file:
 
-``` cshtml
-<p>MyVar value: @Environment.GetEnvironmentVariable("MyVar")</p>
+```cshtml
+<p>MyEnvVar value: @Environment.GetEnvironmentVariable("MyEnvVar")</p>
 ```
 
 1. Press **F5** to debug the application, once the web site comes up, go to the **About** page and you should see the value from the environment variable show up.

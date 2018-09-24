@@ -22,12 +22,12 @@ The goal of this section is to add a second service to your .net core applicatio
 
 1. Open the **ValuesController.cs** file in the **Controllers** folder
 
-1. Substotute the **Get()** method with this method:
+1. Substitute the **Get()** method with this method:
 
-``` c#
+```c#
     public String Get()
     {
-        return "Hello form the other side";
+        return "Hello from the other side";
     }
 ```
 
@@ -39,7 +39,7 @@ The goal of this section is to add a second service to your .net core applicatio
 
 1. Add the following code snippet to replace the OnGet method
 
-``` c#
+```c#
     public async Task OnGet()
     {
         HttpClient client = new HttpClient();
