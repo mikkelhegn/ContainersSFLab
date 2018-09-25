@@ -3,8 +3,6 @@
 ## Goal
  The goal of this section is to deploy a container to the Mesh environment in Azure and access the application running in Azure.
 
- ![Hello world app in the browser][sfm-app-browser]
-
 ## Steps
 In this exercise, you will complete the following steps 
 * Install the Azure Mesh CLI

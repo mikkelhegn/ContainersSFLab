@@ -1,5 +1,5 @@
  
-# Build a Docker container for Windows, with an existing ASP.NET web application
+# Build a Docker container for Windows, using an existing ASP.NET web application
 
 **Goal:** The goal of this section is to have an ASP.NET application running in a Docker container on your Windows 10 developer machine.
 
